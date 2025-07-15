@@ -20,12 +20,12 @@ include '../../backend/verifica.php';
       </div>
       <ul class="nav nav-pills flex-column">
         <li class="nav-item"><a href="index.html" class="nav-link text-white active">Dashboard</a></li>
-        <li class="nav-item"><a href="turmas.html" class="nav-link text-white">Turmas</a></li>
+        <li class="nav-item"><a href="turmas.php" class="nav-link text-white">Turmas</a></li>
         <li class="nav-item"><a href="professores.html" class="nav-link text-white">Professores</a></li>
         <li class="nav-item"><a href="alunos.html" class="nav-link text-white">Alunos</a></li>
         <li class="nav-item"><a href="materias.html" class="nav-link text-white">Matérias</a></li>
         <li class="nav-item"><a href="relatorios.html" class="nav-link text-white">Relatórios</a></li>
-        <li class="nav-item mt-3"><a href="#" class="nav-link text-danger">Sair</a></li>
+        <li class="nav-item mt-3"><a href="../../backend/sair.php" class="nav-link text-danger">Sair</a></li>
       </ul>
     </nav>
     <div class="flex-grow-1">
