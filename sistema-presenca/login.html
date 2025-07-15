@@ -16,25 +16,25 @@
   <img src="iflogov2.jpg" alt="Logo IF" width="40" height="40" />
   Instituto Federal
         </h2>
-        <form>
+        <form action="../msadm/login.php" method="POST">
           <div class="mb-3">
             <label for="email" class="form-label text-secondary">E-mail institucional</label>
-            <input type="email" class="form-control" id="email" placeholder="nome@if.edu.br" required />
+            <input type="email" class="form-control" id="email" name="email" placeholder="nome@if.edu.br" required />
           </div>
           <div class="mb-3">
             <label for="senha" class="form-label text-secondary">Senha</label>
-            <input type="password" class="form-control" id="senha" placeholder="••••••••" required />
+            <input type="password" class="form-control" id="senha" name="senha" placeholder="••••••••" required />
           </div>
           <div class="mb-3">
         <label class="form-label text-secondary">Tipo de usuário</label>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="tipoUsuario" id="admin" value="Administrador" required>
+            <input class="form-check-input" type="radio" name="tipoUsuario" id="admin" value="administrator" required>
             <label class="form-check-label text-secondary" for="admin">
             Administrador
             </label>
             </div>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="tipoUsuario" id="professor" value="Professor" required>
+            <input class="form-check-input" type="radio" name="tipoUsuario" id="professor" value="teacher" required>
             <label class="form-check-label text-secondary" for="professor">
             Professor
             </label>
