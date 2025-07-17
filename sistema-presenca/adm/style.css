@@ -1,69 +1,86 @@
-/* --- TELA DE LOGIN --- */
-.bg-image {
-  background: url("kta.jpg") no-repeat center center fixed;
-  background-size: cover;
-  height: 100vh;
-  width: 100vw;
-}
-
-.login-card {
-  background-color: white;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.btn-success {
-  background-color: #359830;
-  border: none;
-}
-
-.btn-success:hover {
-  background-color: #2e872a;
-}
-
-/* --- ÁREA ADMINISTRATIVA --- */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+:root {
+  --cor-primaria: #ffffff;
+  --cor-secundaria: #359830;
+  --cor-secundaria-hover: #2e872a;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 240px;
+  min-width: 220px;
+  background-color: var(--cor-secundaria);
   height: 100vh;
-  background-color: #359830;
-  color: white;
-  position: fixed;
+  transition: transform 0.3s ease-in-out;
 }
 
+/* Botão da sidebar mobile */
+.toggle-sidebar-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--cor-secundaria);
+}
+
+/* Links da sidebar */
+.sidebar .nav-link {
+  color: var(--cor-primaria);
+}
 .sidebar .nav-link.active,
 .sidebar .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--cor-primaria);
 }
 
 /* Topbar */
 .topbar {
-  margin-left: 240px;
-  background-color: white;
+  background-color: var(--cor-primaria);
 }
 
-/* Conteúdo principal */
-main {
-  margin-left: 240px;
-  background-color: #f8f9fa;
-  min-height: calc(100vh - 56px);
+/* Botões */
+.btn-success {
+  background-color: var(--cor-secundaria);
+  border: none;
+}
+.btn-success:hover {
+  background-color: var(--cor-secundaria-hover);
+}
+
+/* Tabelas responsivas */
+.card-body {
   overflow-x: auto;
 }
 
-/* Tabela */
-table {
-  width: 100%;
+/* Comportamento da sidebar em telas pequenas */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .toggle-sidebar-btn {
+    display: block;
+  }
 }
 
-.table th,
-.table td {
-  vertical-align: middle;
-  text-align: center;
+/* Imagem de fundo atrás das tabelas */
+.fundo-tabela {
+  background-image: url("fundotabela.jpg"); /* troque pelo nome do seu arquivo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+/* Tabela com fundo branco semi-transparente para legibilidade */
+.fundo-tabela .table {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
 }

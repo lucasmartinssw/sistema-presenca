@@ -1,6 +1,6 @@
 /* --- TELA DE LOGIN --- */
 .bg-image {
-  background: url("kta.jpg") no-repeat center center fixed;
+  background: url("images/kta.jpg") no-repeat center center fixed;
   background-size: cover;
   height: 100vh;
   width: 100vw;
