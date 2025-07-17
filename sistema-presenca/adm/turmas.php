@@ -1,4 +1,5 @@
 <?php
+$pagina_atual = 'turmas';
 include '../../backend/verifica.php'; // Inclui o arquivo de verificação de sessão/autenticação
 include '../../backend/conect.php'; // Inclui o arquivo de conexão com o banco de dados
 
@@ -25,21 +26,13 @@ try {
 </head>
 <body>
   <div class="d-flex">
-    <nav class="sidebar d-flex flex-column p-3">
-      <div class="d-flex align-items-center mb-4">
-        <img src="../images/iflogov2.jpg" alt="Logo IF" width="40" class="me-2">
-        <span class="fs-5 text-white">Painel IF</span>
-      </div>
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item"><a href="index.html" class="nav-link text-white">Dashboard</a></li>
-        <li class="nav-item"><a href="turmas.php" class="nav-link text-white active">Turmas</a></li>
-        <li class="nav-item"><a href="professores.html" class="nav-link text-white">Professores</a></li>
-        <li class="nav-item"><a href="alunos.html" class="nav-link text-white">Alunos</a></li>
-        <li class="nav-item"><a href="materias.html" class="nav-link text-white">Matérias</a></li>
-        <li class="nav-item"><a href="relatorios.html" class="nav-link text-white">Relatórios</a></li>
-        <li class="nav-item mt-3"><a href="#" class="nav-link text-danger">Sair</a></li>
-      </ul>
-    </nav>
+   <nav class="sidebar d-flex flex-column p-3">
+  <div class="d-flex align-items-center mb-4">
+    <img src="../images/iflogov2.jpg" alt="Logo IF" width="40" class="me-2">
+    <span class="fs-5 text-white">Painel IF</span>
+  </div>
+  <?php include 'menu.php'; ?>
+</nav>
     <div class="flex-grow-1">
       <header class="topbar d-flex justify-content-between align-items-center p-3 shadow-sm">
         <h5 class="mb-0">Gerenciar Turmas</h5>

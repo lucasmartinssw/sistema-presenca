@@ -1,4 +1,5 @@
 <?php
+$pagina_atual = 'alunos';
 include '../../backend/verifica.php'; // Inclui o arquivo de verificação de sessão/autenticação
 include '../../backend/conect.php'; // Inclui o arquivo de conexão com o banco de dados
 
