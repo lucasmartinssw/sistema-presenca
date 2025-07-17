@@ -13,12 +13,14 @@ try {
 }
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Instituto Federal</title>
+  <title>Alunos - Instituto Federal</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -33,14 +35,37 @@ try {
 </nav>
     <div class="flex-grow-1">
       <header class="topbar d-flex justify-content-between align-items-center p-3 shadow-sm">
-        <h5 class="mb-0">Dashboard</h5>
-        <span class="text-muted">Usuário logado</span>
+        <h5 class="mb-0">Gerenciar Alunos</h5>
+        <button class="btn btn-success">Cadastrar Novo Aluno</button>
       </header>
       <main class="p-4">
         <div class="card">
-          <div class="card-body">
-            <h6 class="card-title">Bem-vindo</h6>
-            <p class="card-text">Selecione uma opção no menu lateral.</p>
+          <div class="card-body overflow-auto">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Matrícula</th>
+                  <th>Curso</th>
+                  <th>Responsável</th>
+                  <th>Número do Responsável</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ana Paula</td>
+                  <td>2023123</td>
+                  <td>Informática</td>
+                  <td>Maria Paula</td>
+                  <td>(34) 91234-5678</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary">Editar</button>
+                    <button class="btn btn-sm btn-danger">Excluir</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </main>

@@ -13,12 +13,15 @@ try {
 }
 
 ?>
-<!DOCTYPE html>
+
+
+
+
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Instituto Federal</title>
+  <title>Professores - Instituto Federal</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -33,14 +36,35 @@ try {
 </nav>
     <div class="flex-grow-1">
       <header class="topbar d-flex justify-content-between align-items-center p-3 shadow-sm">
-        <h5 class="mb-0">Dashboard</h5>
-        <span class="text-muted">Usuário logado</span>
+        <h5 class="mb-0">Gerenciar Professores</h5>
+        <button class="btn btn-success">Cadastrar Novo Professor</button>
       </header>
       <main class="p-4">
         <div class="card">
-          <div class="card-body">
-            <h6 class="card-title">Bem-vindo</h6>
-            <p class="card-text">Selecione uma opção no menu lateral.</p>
+          <div class="card-body overflow-auto">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Matrícula</th>
+                  <th>Disciplina</th>
+                  <th>Email</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>João Silva</td>
+                  <td>2021456</td>
+                  <td>Matemática</td>
+                  <td>joao@if.edu.br</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary">Editar</button>
+                    <button class="btn btn-sm btn-danger">Excluir</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </main>
