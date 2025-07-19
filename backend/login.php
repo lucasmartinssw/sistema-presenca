@@ -14,29 +14,27 @@ if (
         $password = $_POST['senha'];
         $tipoUsuarioInput = $_POST['tipoUsuario']; // Renamed to avoid confusion with database value
 
-        // Consulta o usuário pelo e-mail
-        // Selecionamos id_user, email, password_hash e user_type para verificação
-        $stmt = $pdo->prepare("SELECT id_user, email, password_hash, user_type FROM users WHERE email = :email");
-        $stmt->execute(['email' => $email]);
+        // Consulta o usuário pelo e-mail, senha e tipo de usuário diretamente
+        $stmt = $pdo->prepare("SELECT id_user, email, user_type FROM users WHERE email = :email AND password_hash = :password AND user_type = :user_type");
+        $stmt->execute([
+            'email' => $email,
+            'password' => $password,
+            'user_type' => $tipoUsuarioInput
+        ]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Verifica se o usuário existe, a senha está correta E o tipo de usuário enviado corresponde ao do banco
-        if ($user &&
-            password_verify($password, $user['password_hash']) && // <--- ESTA É A LINHA CRÍTICA PARA VERIFICAR A SENHA
-            $user['user_type'] === $tipoUsuarioInput // Verifica se o tipo de usuário enviado corresponde ao do banco
-        ) {
+        if ($user) {
             // Login bem-sucedido
-            // Armazene apenas informações essenciais do usuário logado na sessão
             $_SESSION['user_id'] = $user['id_user'];
             $_SESSION['email'] = $user['email'];
-            $_SESSION['tipoUsuario'] = $user['user_type']; // Sempre pegue o tipo de usuário do banco
+            $_SESSION['tipoUsuario'] = $user['user_type'];
 
             if ($user['user_type'] === 'administrator') {
                 echo "<script>window.location.href='../sistema-presenca/adm/index.php';</script>";
                 exit;
             } else {
-                // Se for professor ou aluno, redireciona para 'inicial.php' ou a página correta
-                echo "<script>window.location.href='../sistema-presenca/professor/index.php';</script>"; // Ajuste conforme a estrutura
+                // Se for professor ou aluno, redireciona para a página correta
+                echo "<script>window.location.href='../sistema-presenca/professor/index.php';</script>";
                 exit;
             }
         } else {
