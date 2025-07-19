@@ -27,7 +27,7 @@ try {
   <div class="d-flex">
    <nav class="sidebar d-flex flex-column p-3">
   <div class="d-flex align-items-center mb-4">
-    <img src="../images/iflogov2.jpg" alt="Logo IF" width="40" class="me-2">
+    <img src="../images/iflogov2.jpg" alt="Logo IF" width="40" class="me-2 rounded">
     <span class="fs-5 text-white">Painel IF</span>
   </div>
   <?php include 'menu.php'; ?>

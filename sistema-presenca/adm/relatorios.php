@@ -3,21 +3,8 @@ $pagina_atual = 'relatorios';
 include '../../backend/verifica.php'; // Inclui o arquivo de verificação de sessão/autenticação
 include '../../backend/conect.php'; // Inclui o arquivo de conexão com o banco de dados
 
-// Query para buscar todas as turmas
-try {
-    // A consulta não precisa mudar, pois estamos apenas não exibindo o ID
-    $stmt = $pdo->query("SELECT id_class, class_name, class_course, class_year FROM Classes ORDER BY class_name ASC");
-    $turmas = $stmt->fetchAll();
-} catch (PDOException $e) {
-    echo "Erro ao carregar turmas: " . $e->getMessage();
-    $turmas = []; // Garante que $turmas seja um array vazio em caso de erro
-}
-
+// Query para buscar dados de relatórios, se necessário
 ?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -29,47 +16,49 @@ try {
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="d-flex">
+  <div class="d-flex">
    <nav class="sidebar d-flex flex-column p-3">
   <div class="d-flex align-items-center mb-4">
-    <img src="../images/iflogov2.jpg" alt="Logo IF" width="40" class="me-2">
+    <img src="../images/iflogov2.jpg" alt="Logo IF" width="40" class="me-2 rounded">
     <span class="fs-5 text-white">Painel IF</span>
   </div>
   <?php include 'menu.php'; ?>
 </nav>
     <div class="flex-grow-1">
       <header class="topbar d-flex justify-content-between align-items-center p-3 shadow-sm">
-        <h5 class="mb-0">Relatórios</h5>
-        <button class="btn btn-success">Gerar Novo Relatório</button>
-      </header>
+        <h5 class="mb-0">Gerar Relatórios</h5>
+        </header>
       <main class="p-4">
         <div class="card">
-          <div class="card-body overflow-auto">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Relatório</th>
-                  <th>Data de Geração</th>
-                  <th>Tipo</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Presença Alunos - Maio</td>
-                  <td>15/07/2025</td>
-                  <td>Presença</td>
-                  <td>
-                    <button class="btn btn-sm btn-primary">Visualizar</button>
-                    <button class="btn btn-sm btn-danger">Excluir</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="card-body">
+            <h6 class="card-title">Opções de Relatórios</h6>
+            <p class="card-text">Aqui você poderá configurar e gerar diversos tipos de relatórios.</p>
+            <form>
+                <div class="mb-3">
+                    <label for="tipoRelatorio" class="form-label">Tipo de Relatório</label>
+                    <select class="form-select" id="tipoRelatorio" name="tipoRelatorio">
+                        <option value="">Selecione...</option>
+                        <option value="presenca">Presença por Turma</option>
+                        <option value="alunos_ativos">Alunos Ativos</option>
+                        <option value="professores_cursos">Professores por Curso</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="dataInicio" class="form-label">Data Início</label>
+                    <input type="date" class="form-control" id="dataInicio" name="dataInicio">
+                </div>
+                <div class="mb-3">
+                    <label for="dataFim" class="form-label">Data Fim</label>
+                    <input type="date" class="form-control" id="dataFim" name="dataFim">
+                </div>
+                <button type="submit" class="btn btn-primary">Gerar Relatório</button>
+            </form>
           </div>
         </div>
       </main>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
