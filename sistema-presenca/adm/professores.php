@@ -94,10 +94,11 @@ if (isset($_GET['excluir']) && is_numeric($_GET['excluir'])) {
 // 1. Buscar VÍNCULOS para a tabela principal (adicionado IDs para o modal de edição)
 $vinculos = [];
 try {
+    // ########## INÍCIO DA CORREÇÃO ##########
     $stmt = $pdo->query(
        "SELECT 
             cst.id_class_subject_teacher, 
-            t.full_name, 
+            u.username, 
             s.subject_name, 
             cl.class_name, 
             cl.class_course,
@@ -106,34 +107,52 @@ try {
             cst.id_class
         FROM class_subject_teachers AS cst
         JOIN teachers AS t ON cst.id_teacher = t.id_teacher
+        JOIN users AS u ON t.id_user = u.id_user
         JOIN subjects AS s ON cst.id_subject = s.id_subject
         JOIN classes AS cl ON cst.id_class = cl.id_class
         WHERE t.is_active = 1 AND cl.is_active = 1
-        ORDER BY t.full_name, s.subject_name"
+        ORDER BY u.username, s.subject_name"
     );
+    // ########## FIM DA CORREÇÃO ##########
     $vinculos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) { /* Tratar erro */ }
+} catch (PDOException $e) { 
+    error_log("Erro ao buscar vínculos: " . $e->getMessage());
+}
 
 // 2. Buscar PROFESSORES ativos para os modais
 $professores = [];
 try {
-    $stmtProf = $pdo->query("SELECT id_teacher, full_name FROM teachers WHERE is_active = 1 ORDER BY full_name ASC");
+    $stmtProf = $pdo->query(
+       "SELECT 
+            t.id_teacher, 
+            u.username 
+        FROM teachers AS t
+        JOIN users AS u ON t.id_user = u.id_user
+        WHERE t.is_active = 1 AND u.user_type = 'teacher'
+        ORDER BY u.username ASC"
+    );
     $professores = $stmtProf->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) { /* Tratar erro */ }
+} catch (PDOException $e) {
+    error_log("Erro ao buscar professores: " . $e->getMessage());
+}
 
 // 3. Buscar MATÉRIAS para os modais
 $materias = [];
 try {
     $stmtMat = $pdo->query("SELECT id_subject, subject_name FROM subjects ORDER BY subject_name ASC");
     $materias = $stmtMat->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) { /* Tratar erro */ }
+} catch (PDOException $e) { 
+    error_log("Erro ao buscar matérias: " . $e->getMessage());
+}
 
 // 4. Buscar TURMAS ativas para os modais
 $turmas = [];
 try {
     $stmtTurmas = $pdo->query("SELECT id_class, class_name, class_course FROM classes WHERE is_active = 1 ORDER BY class_name ASC");
     $turmas = $stmtTurmas->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) { /* Tratar erro */ }
+} catch (PDOException $e) { 
+    error_log("Erro ao buscar turmas: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -186,15 +205,15 @@ try {
                         <?php else: ?>
                             <?php foreach ($vinculos as $vinculo): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($vinculo['full_name']) ?></td>
+                                    <td><?= htmlspecialchars($vinculo['username']) ?></td>
                                     <td><?= htmlspecialchars($vinculo['subject_name']) ?></td>
                                     <td><?= htmlspecialchars($vinculo['class_name'] . ' - ' . $vinculo['class_course']) ?></td>
                                     <td>
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarVinculo"
-                                            data-id="<?= $vinculo['id_class_subject_teacher'] ?>"
-                                            data-teacher-id="<?= $vinculo['id_teacher'] ?>"
-                                            data-subject-id="<?= $vinculo['id_subject'] ?>"
-                                            data-class-id="<?= $vinculo['id_class'] ?>">
+                                                data-id="<?= $vinculo['id_class_subject_teacher'] ?>"
+                                                data-teacher-id="<?= $vinculo['id_teacher'] ?>"
+                                                data-subject-id="<?= $vinculo['id_subject'] ?>"
+                                                data-class-id="<?= $vinculo['id_class'] ?>">
                                             Editar
                                         </button>
                                         <a href="professores.php?excluir=<?= $vinculo['id_class_subject_teacher'] ?>" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este vínculo?');">Excluir</a>
@@ -225,7 +244,7 @@ try {
                         <select class="form-select" name="id_teacher" required>
                             <option value="">Selecione um professor</option>
                             <?php foreach ($professores as $professor): ?>
-                                <option value="<?= $professor['id_teacher'] ?>"><?= htmlspecialchars($professor['full_name']) ?></option>
+                                <option value="<?= $professor['id_teacher'] ?>"><?= htmlspecialchars($professor['username']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -270,7 +289,7 @@ try {
                         <select class="form-select" name="id_teacher" id="edit_id_teacher" required>
                             <option value="">Selecione um professor</option>
                             <?php foreach ($professores as $professor): ?>
-                                <option value="<?= $professor['id_teacher'] ?>"><?= htmlspecialchars($professor['full_name']) ?></option>
+                               <option value="<?= $professor['id_teacher'] ?>"><?= htmlspecialchars($professor['username']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

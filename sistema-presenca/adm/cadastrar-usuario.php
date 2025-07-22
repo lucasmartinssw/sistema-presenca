@@ -1,54 +1,77 @@
 <?php
-// Processamento do formulário
+$pagina_atual = 'cadastrar-usuario.php';
+include '../../backend/verifica.php'; // Inclui o arquivo de verificação de sessão/autenticação
+include '../../backend/conect.php'; // Inclui o arquivo de conexão com o banco de dados
 $msg = "";
 $classe = "";
 
+if (isset($_SESSION['message'])) {
+    $msg = $_SESSION['message']['text'];
+    $classe = $_SESSION['message']['type'];
+    unset($_SESSION['message']); 
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $pagina_atual = 'cadastrar-usuario.php';
-    include '../../backend/verifica.php'; // Inclui o arquivo de verificação de sessão/autenticação
-    include '../../backend/conect.php'; // Inclui o arquivo de conexão com o banco de dados
+    include '../../backend/conect.php'; 
+    include '../../backend/verifica.php';
 
+    $nome = $_POST['nome'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $senha = $_POST['senha'] ?? '';
+    $confirmar = $_POST['confirmar'] ?? '';
+    $tipo = $_POST['tipoUsuario'] ?? '';
 
-  $nome = $_POST['nome'] ?? '';
-  $email = $_POST['email'] ?? '';
-  $senha = $_POST['senha'] ?? '';
-  $confirmar = $_POST['confirmar'] ?? '';
-  $tipo = $_POST['tipoUsuario'] ?? '';
+    if (empty($nome) || empty($email) || empty($senha) || empty($confirmar) || empty($tipo)) {
+        $msg = "⚠️ Preencha todos os campos.";
+        $classe = "warning";
+    } elseif ($senha !== $confirmar) {
+        $msg = "⚠️ As senhas não coincidem.";
+        $classe = "warning";
+    } else {
+        $pdo->beginTransaction(); 
 
-  if (empty($nome) || empty($email) || empty($senha) || empty($confirmar) || empty($tipo)) {
-    $msg = "⚠️ Preencha todos os campos.";
-    $classe = "warning";
-  } elseif ($senha !== $confirmar) {
-    $msg = "⚠️ As senhas não coincidem.";
-    $classe = "warning";
-  } else {
-    try {
-      $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+        try {
+            $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-      // Verifica se o e-mail já existe
-      $verifica = $pdo->prepare("SELECT id_user FROM users WHERE email = :email");
-      $verifica->execute(['email' => $email]);
+            
+            $verifica = $pdo->prepare("SELECT id_user FROM users WHERE email = :email OR username = :nome");
+            $verifica->execute(['email' => $email, 'nome' => $nome]);
 
-      if ($verifica->rowCount() > 0) {
-        $msg = "❌ E-mail já cadastrado.";
-        $classe = "danger";
-      } else {
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash, user_type) VALUES (:nome, :email, :senha, :tipo)");
-        $stmt->execute([
-          'nome' => $nome,
-          'email' => $email,
-          'senha' => $senhaHash,
-          'tipo' => $tipo
-        ]);
-        $msg = "✅ Usuário cadastrado com sucesso.";
-        $classe = "success";
-        header("Location: index.php"); // Redireciona após o cadastro
-      }
-    } catch (Exception $e) {
-      $msg = "❌ Erro ao cadastrar usuário.";
-      $classe = "danger";
+            if ($verifica->rowCount() > 0) {
+                $msg = "❌ E-mail ou Nome de usuário já cadastrado.";
+                $classe = "danger";
+                $pdo->rollBack(); 
+            } else {
+                
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash, user_type) VALUES (:nome, :email, :senha, :tipo)");
+                $stmt->execute([
+                    'nome' => $nome,
+                    'email' => $email,
+                    'senha' => $senhaHash,
+                    'tipo' => $tipo
+                ]);
+
+                if ($tipo === 'teacher') {
+                    $id_user_criado = $pdo->lastInsertId();
+
+                    $stmtTeacher = $pdo->prepare("INSERT INTO teachers (id_user) VALUES (:id_user)");
+                    $stmtTeacher->execute(['id_user' => $id_user_criado]);
+                }
+                
+                $pdo->commit(); 
+
+                $_SESSION['message'] = ['type' => 'success', 'text' => '✅ Usuário cadastrado com sucesso.'];
+                header("Location: " . $_SERVER['PHP_SELF']); 
+                exit(); 
+                
+            }
+        } catch (Exception $e) {
+            $pdo->rollBack(); 
+          
+            $msg = "❌ Erro ao cadastrar usuário.";
+            $classe = "danger";
+        }
     }
-  }
 }
 ?>
 
@@ -68,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <img src="../images/iflogov2.jpg" alt="Logo IF" width="40" height="40" />
       Cadastrar Novo Usuário
     </h3>
-
+    
     <?php if (!empty($msg)): ?>
       <div class="alert alert-<?= $classe ?>" role="alert"><?= $msg ?></div>
     <?php endif; ?>
