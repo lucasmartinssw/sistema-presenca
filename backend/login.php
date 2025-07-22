@@ -38,11 +38,13 @@ if (
                 exit;
             }
         } else {
-            // Usuário, senha ou tipo de usuário incorretos
-            echo "<center>Usuário, senha ou tipo de usuário incorretos!</center>";
-        }
+        // Credenciais inválidas
+        header("Location: ../sistema-presenca/login.html?erro=1");
+        exit;
+    }
 } else {
-    // Campos não enviados
-    echo "<center>Por favor, forneça o e-mail, senha e tipo de usuário.</center>";
+    // Campos ausentes
+    header("Location: ../sistema-presenca/login.html?erro=1");
+    exit;
 }
 ?>
