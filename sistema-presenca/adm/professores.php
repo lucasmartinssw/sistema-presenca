@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $id_class = $_POST['id_class'];
 
         try {
+            // Verifica se o vínculo já existe para evitar duplicatas
             $checkStmt = $pdo->prepare("SELECT id_class_subject_teacher FROM class_subject_teachers WHERE id_teacher = :id_teacher AND id_subject = :id_subject AND id_class = :id_class");
             $checkStmt->execute(['id_teacher' => $id_teacher, 'id_subject' => $id_subject, 'id_class' => $id_class]);
             if ($checkStmt->fetch()) {
@@ -29,39 +30,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
 
-    // // AÇÃO: Cadastrar novo PROFESSOR (e seu usuário)
-    // if ($_POST['action'] === 'create_teacher') {
-    //     $fullName = $_POST['nomeProfessor'];
-    //     $email = $_POST['emailProfessor'];
-    //     $password = $_POST['senhaProfessor'];
+    // AÇÃO: Editar um VÍNCULO existente
+    if ($_POST['action'] === 'update_vinculo') {
+        $id_vinculo = $_POST['id_vinculo'];
+        $id_teacher = $_POST['id_teacher'];
+        $id_subject = $_POST['id_subject'];
+        $id_class = $_POST['id_class'];
 
-    //     // É uma boa prática usar transações quando você precisa executar múltiplas queries que dependem uma da outra.
-    //     $pdo->beginTransaction();
-    //     try {
-    //         // 1. Criar o usuário
-    //         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    //         $stmtUser = $pdo->prepare("INSERT INTO users (email, password_hash, user_type) VALUES (:email, :password, 'teacher')");
-    //         $stmtUser->execute(['email' => $email, 'password' => $hashedPassword]);
-    //         $id_user = $pdo->lastInsertId();
-
-    //         // 2. Criar o professor, vinculando ao usuário recém-criado
-    //         $stmtTeacher = $pdo->prepare("INSERT INTO teachers (id_user, full_name, is_active) VALUES (:id_user, :full_name, 1)");
-    //         $stmtTeacher->execute(['id_user' => $id_user, 'full_name' => $fullName]);
-
-    //         // Se tudo deu certo, confirma as operações
-    //         $pdo->commit();
-    //         $_SESSION['message'] = ['type' => 'success', 'text' => 'Professor cadastrado com sucesso!'];
-
-    //     } catch (PDOException $e) {
-    //         // Se algo deu errado, desfaz tudo
-    //         $pdo->rollBack();
-    //         if ($e->errorInfo[1] == 1062) { // Código de erro para entrada duplicada (email)
-    //             $_SESSION['message'] = ['type' => 'danger', 'text' => 'Erro: Este e-mail já está em uso!'];
-    //         } else {
-    //             $_SESSION['message'] = ['type' => 'danger', 'text' => 'Erro ao cadastrar professor: ' . $e->getMessage()];
-    //         }
-    //     }
-    // }
+        try {
+            // Verifica se a nova combinação já existe (excluindo o próprio registro que está sendo editado)
+             $checkStmt = $pdo->prepare("SELECT id_class_subject_teacher FROM class_subject_teachers WHERE id_teacher = :id_teacher AND id_subject = :id_subject AND id_class = :id_class AND id_class_subject_teacher != :id_vinculo");
+            $checkStmt->execute(['id_teacher' => $id_teacher, 'id_subject' => $id_subject, 'id_class' => $id_class, 'id_vinculo' => $id_vinculo]);
+            if ($checkStmt->fetch()) {
+                $_SESSION['message'] = ['type' => 'warning', 'text' => 'Este vínculo já existe em outro registro!'];
+            } else {
+                $stmt = $pdo->prepare("UPDATE class_subject_teachers SET id_teacher = :id_teacher, id_subject = :id_subject, id_class = :id_class WHERE id_class_subject_teacher = :id_vinculo");
+                $stmt->execute(['id_teacher' => $id_teacher, 'id_subject' => $id_subject, 'id_class' => $id_class, 'id_vinculo' => $id_vinculo]);
+                $_SESSION['message'] = ['type' => 'success', 'text' => 'Vínculo atualizado com sucesso!'];
+            }
+        } catch (PDOException $e) {
+            $_SESSION['message'] = ['type' => 'danger', 'text' => 'Erro ao atualizar vínculo: ' . $e->getMessage()];
+        }
+    }
 
     // AÇÃO: Cadastrar nova MATÉRIA
     if ($_POST['action'] === 'create_subject') {
@@ -101,11 +91,19 @@ if (isset($_GET['excluir']) && is_numeric($_GET['excluir'])) {
 
 // --- BUSCAR DADOS PARA EXIBIÇÃO E MODAIS ---
 
-// 1. Buscar VÍNCULOS para a tabela principal
+// 1. Buscar VÍNCULOS para a tabela principal (adicionado IDs para o modal de edição)
 $vinculos = [];
 try {
     $stmt = $pdo->query(
-       "SELECT cst.id_class_subject_teacher, t.full_name, s.subject_name, cl.class_name, cl.class_course
+       "SELECT 
+            cst.id_class_subject_teacher, 
+            t.full_name, 
+            s.subject_name, 
+            cl.class_name, 
+            cl.class_course,
+            cst.id_teacher,
+            cst.id_subject,
+            cst.id_class
         FROM class_subject_teachers AS cst
         JOIN teachers AS t ON cst.id_teacher = t.id_teacher
         JOIN subjects AS s ON cst.id_subject = s.id_subject
@@ -116,21 +114,21 @@ try {
     $vinculos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) { /* Tratar erro */ }
 
-// 2. Buscar PROFESSORES ativos para o modal de vínculo
+// 2. Buscar PROFESSORES ativos para os modais
 $professores = [];
 try {
     $stmtProf = $pdo->query("SELECT id_teacher, full_name FROM teachers WHERE is_active = 1 ORDER BY full_name ASC");
     $professores = $stmtProf->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) { /* Tratar erro */ }
 
-// 3. Buscar MATÉRIAS para o modal de vínculo
+// 3. Buscar MATÉRIAS para os modais
 $materias = [];
 try {
     $stmtMat = $pdo->query("SELECT id_subject, subject_name FROM subjects ORDER BY subject_name ASC");
     $materias = $stmtMat->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) { /* Tratar erro */ }
 
-// 4. Buscar TURMAS ativas para o modal de vínculo
+// 4. Buscar TURMAS ativas para os modais
 $turmas = [];
 try {
     $stmtTurmas = $pdo->query("SELECT id_class, class_name, class_course FROM classes WHERE is_active = 1 ORDER BY class_name ASC");
@@ -161,8 +159,7 @@ try {
             <h5 class="mb-0">Gerenciar Vínculos</h5>
             <div>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCadastroVinculo"><i class="bi bi-link-45deg"></i> Criar Vínculo</button>
-                <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCadastroProfessor"><i class="bi bi-person-plus"></i> Cadastrar Professor</button> -->
-                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCadastroMateria"><i class="bi bi-book"></i> Cadastrar Matéria</button>
+                <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalCadastroMateria"><i class="bi bi-book"></i> Cadastrar Matéria</button>
             </div>
         </header>
         <main class="p-4">
@@ -174,8 +171,8 @@ try {
             ?>
             <div class="card">
                 <div class="card-body overflow-auto">
-                    <table class="table table-bordered">
-                        <thead>
+                    <table class="table">
+                        <thead class="table-light">
                         <tr>
                             <th>Professor</th>
                             <th>Matéria</th>
@@ -193,7 +190,14 @@ try {
                                     <td><?= htmlspecialchars($vinculo['subject_name']) ?></td>
                                     <td><?= htmlspecialchars($vinculo['class_name'] . ' - ' . $vinculo['class_course']) ?></td>
                                     <td>
-                                        <a href="professores.php?excluir=<?= $vinculo['id_class_subject_teacher'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este vínculo?');">Excluir</a>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarVinculo"
+                                            data-id="<?= $vinculo['id_class_subject_teacher'] ?>"
+                                            data-teacher-id="<?= $vinculo['id_teacher'] ?>"
+                                            data-subject-id="<?= $vinculo['id_subject'] ?>"
+                                            data-class-id="<?= $vinculo['id_class'] ?>">
+                                            Editar
+                                        </button>
+                                        <a href="professores.php?excluir=<?= $vinculo['id_class_subject_teacher'] ?>" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este vínculo?');">Excluir</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -250,29 +254,45 @@ try {
     </div>
 </div>
 
-<div class="modal fade" id="modalCadastroProfessor" tabindex="-1">
+<div class="modal fade" id="modalEditarVinculo" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Cadastrar Novo Professor</h5>
+                <h5 class="modal-title">Editar Vínculo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form action="professores.php" method="POST">
-                    <input type="hidden" name="action" value="create_teacher">
+                    <input type="hidden" name="action" value="update_vinculo">
+                    <input type="hidden" name="id_vinculo" id="edit_id_vinculo">
                     <div class="mb-3">
-                        <label for="nomeProfessor" class="form-label">Nome Completo</label>
-                        <input type="text" class="form-control" id="nomeProfessor" name="nomeProfessor" required>
+                        <label for="edit_id_teacher" class="form-label">Professor</label>
+                        <select class="form-select" name="id_teacher" id="edit_id_teacher" required>
+                            <option value="">Selecione um professor</option>
+                            <?php foreach ($professores as $professor): ?>
+                                <option value="<?= $professor['id_teacher'] ?>"><?= htmlspecialchars($professor['full_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label for="emailProfessor" class="form-label">E-mail Institucional</label>
-                        <input type="email" class="form-control" id="emailProfessor" name="emailProfessor" required>
+                        <label for="edit_id_subject" class="form-label">Matéria</label>
+                        <select class="form-select" name="id_subject" id="edit_id_subject" required>
+                            <option value="">Selecione uma matéria</option>
+                            <?php foreach ($materias as $materia): ?>
+                                <option value="<?= $materia['id_subject'] ?>"><?= htmlspecialchars($materia['subject_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label for="senhaProfessor" class="form-label">Senha Provisória</label>
-                        <input type="password" class="form-control" id="senhaProfessor" name="senhaProfessor" required>
+                        <label for="edit_id_class" class="form-label">Turma</label>
+                        <select class="form-select" name="id_class" id="edit_id_class" required>
+                            <option value="">Selecione uma turma</option>
+                            <?php foreach ($turmas as $turma): ?>
+                                <option value="<?= $turma['id_class'] ?>"><?= htmlspecialchars($turma['class_name'] . ' - ' . $turma['class_course']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                    <button type="submit" class="btn btn-success">Salvar Professor</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                 </form>
             </div>
         </div>
@@ -293,7 +313,7 @@ try {
                         <label for="nomeMateria" class="form-label">Nome da Matéria</label>
                         <input type="text" class="form-control" id="nomeMateria" name="nomeMateria" required>
                     </div>
-                    <button type="submit" class="btn btn-info">Salvar Matéria</button>
+                    <button type="submit" class="btn btn-info text-white">Salvar Matéria</button>
                 </form>
             </div>
         </div>
@@ -303,13 +323,39 @@ try {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Esconde alertas após 5 segundos
+    // Esconde alertas de feedback após 5 segundos
     setTimeout(function() {
         const alert = document.querySelector('.alert');
         if (alert) {
             alert.style.display = 'none';
         }
     }, 5000);
+
+    // Adiciona listener para o modal de edição para preencher os campos
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalEditar = document.getElementById('modalEditarVinculo');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Botão que acionou o modal
+
+            // Extrai as informações dos atributos data-*
+            var id = button.getAttribute('data-id');
+            var teacherId = button.getAttribute('data-teacher-id');
+            var subjectId = button.getAttribute('data-subject-id');
+            var classId = button.getAttribute('data-class-id');
+
+            // Seleciona os campos do formulário no modal
+            var inputId = modalEditar.querySelector('#edit_id_vinculo');
+            var selectTeacher = modalEditar.querySelector('#edit_id_teacher');
+            var selectSubject = modalEditar.querySelector('#edit_id_subject');
+            var selectClass = modalEditar.querySelector('#edit_id_class');
+
+            // Atualiza os valores dos campos do formulário
+            inputId.value = id;
+            selectTeacher.value = teacherId;
+            selectSubject.value = subjectId;
+            selectClass.value = classId;
+        });
+    });
 </script>
 </body>
 </html>

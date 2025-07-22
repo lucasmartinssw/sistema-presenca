@@ -84,3 +84,9 @@
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
 }
+
+/* Fundo com imagem para toda a tela */
+.bg-image {
+  background: url('kta.jpg') no-repeat center center fixed;
+  background-size: cover;
+}

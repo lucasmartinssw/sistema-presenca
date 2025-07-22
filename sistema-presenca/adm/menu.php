@@ -16,6 +16,8 @@
     <a href="relatorios.php" class="nav-link text-white <?= (isset($pagina_atual) && $pagina_atual === 'relatorios') ? 'active' : '' ?>">Relatórios</a>
   </li>
   <li class="nav-item">
+    <a href="cadastrar-usuario.php" class="nav-link text-white <?= (isset($pagina_atual) && $pagina_atual === 'cadastrar-usuario.php') ? 'active' : '' ?>">Cadastrar Usuário</a>  
+  <li class="nav-item">
     <a href="../../backend/sair.php" class="nav-link text-danger">Sair</a>
   </li>
 </ul>
