@@ -127,6 +127,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <input class="form-check-input" type="radio" name="tipoUsuario" id="professor" value="teacher" required />
           <label class="form-check-label text-secondary" for="professor">Professor</label>
         </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="tipoUsuario" id="professor" value="student" required />
+          <label class="form-check-label text-secondary" for="professor">Aluno</label>
+        </div>
       </div>
 
       <div class="d-grid mt-3">
