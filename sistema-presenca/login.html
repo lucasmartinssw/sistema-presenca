@@ -24,6 +24,16 @@
           ⚠️ Credenciais inválidas. Verifique seu e-mail, senha e tipo de usuário.
         </div>
 
+        <!-- Alerta de acesso negado -->
+        <div id="erro-acesso" class="alert alert-warning d-none" role="alert">
+          ⚠️ Acesso negado. Você não tem permissão para acessar esta área.
+        </div>
+
+        <!-- Alerta de sessão expirada -->
+        <div id="erro-sessao" class="alert alert-info d-none" role="alert">
+          ℹ️ Sua sessão expirou. Faça login novamente.
+        </div>
+
         <form action="../backend/login.php" method="POST">
           <div class="mb-3">
             <label for="email" class="form-label text-secondary">E-mail institucional</label>
@@ -47,13 +57,6 @@
                 Professor
               </label>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="tipoUsuario" id="professor" value="student" required>
-              <label class="form-check-label text-secondary" for="professor">
-                Aluno
-              </label>
-            </div>
-          </div>
           <div class="d-grid">
             <button type="submit" class="btn btn-success">Entrar</button>
           </div>
@@ -66,8 +69,14 @@
   <!-- Script para exibir erro -->
   <script>
     const params = new URLSearchParams(window.location.search);
-    if (params.get('erro') === '1') {
+    const erro = params.get('erro');
+    
+    if (erro === '1') {
       document.getElementById('erro-login').classList.remove('d-none');
+    } else if (erro === '2') {
+      document.getElementById('erro-acesso').classList.remove('d-none');
+    } else if (erro === '3') {
+      document.getElementById('erro-sessao').classList.remove('d-none');
     }
   </script>
 </body>

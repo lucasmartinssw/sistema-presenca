@@ -327,5 +327,8 @@ try {
         }, 5000);
     });
   </script>
+
+  <?php include 'modal-cadastrar-usuario.php'; ?>
+  <script src="cadastro-usuario-modal.js"></script>
 </body>
 </html>

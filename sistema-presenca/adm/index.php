@@ -47,5 +47,10 @@ try {
       </main>
     </div>
   </div>
+
+  <?php include 'modal-cadastrar-usuario.php'; ?>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="cadastro-usuario-modal.js"></script>
 </body>
 </html>

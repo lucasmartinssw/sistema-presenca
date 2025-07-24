@@ -339,9 +339,12 @@ try {
     </div>
 </div>
 
+<?php include 'modal-cadastrar-usuario.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="cadastro-usuario-modal.js"></script>
 <script>
+    // Script existente para edição de vínculos
     // Esconde alertas de feedback após 5 segundos
     setTimeout(function() {
         const alert = document.querySelector('.alert');
