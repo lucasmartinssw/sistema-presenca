@@ -6,7 +6,7 @@ include '../../backend/conect.php'; // Inclui o arquivo de conexão com o banco 
 // Query para buscar todas as turmas
 try {
     // A consulta não precisa mudar, pois estamos apenas não exibindo o ID
-    $stmt = $pdo->query("SELECT id_class, class_name, class_course, class_year FROM Classes ORDER BY class_name ASC");
+    $stmt = $pdo->query("SELECT id_class, class_name, class_course, class_year FROM classes ORDER BY class_name ASC");
     $turmas = $stmt->fetchAll();
 } catch (PDOException $e) {
     echo "Erro ao carregar turmas: " . $e->getMessage();

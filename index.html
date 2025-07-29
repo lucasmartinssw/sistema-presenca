@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Instituto Federal</title>
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="bg-image">
+    <div class="d-flex justify-content-center align-items-center vh-100">
+      <div class="card login-card p-4 shadow-lg">
+        <h2 class="text-center mb-4 text-secondary d-flex align-items-center justify-content-center gap-2">
+          <img src="sistema-preseca/images/iflogov2.jpg" alt="Logo IF" width="40" height="40" />
+          Instituto Federal
+        </h2>
+
+        <!-- Alerta de erro -->
+        <div id="erro-login" class="alert alert-danger d-none" role="alert">
+          ⚠️ Credenciais inválidas. Verifique seu e-mail, senha e tipo de usuário.
+        </div>
+
+        <!-- Alerta de acesso negado -->
+        <div id="erro-acesso" class="alert alert-warning d-none" role="alert">
+          ⚠️ Acesso negado. Você não tem permissão para acessar esta área.
+        </div>
+
+        <!-- Alerta de sessão expirada -->
+        <div id="erro-sessao" class="alert alert-info d-none" role="alert">
+          ℹ️ Sua sessão expirou. Faça login novamente.
+        </div>
+
+        <form action="backend/login.php" method="POST">
+          <div class="mb-3">
+            <label for="email" class="form-label text-secondary">E-mail institucional</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="nome@if.edu.br" required />
+          </div>
+          <div class="mb-3">
+            <label for="senha" class="form-label text-secondary">Senha</label>
+            <input type="password" class="form-control" id="senha" name="senha" placeholder="••••••••" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-secondary">Tipo de usuário</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tipoUsuario" id="admin" value="administrator" required>
+              <label class="form-check-label text-secondary" for="admin">
+                Administrador
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tipoUsuario" id="professor" value="teacher" required>
+              <label class="form-check-label text-secondary" for="professor">
+                Professor
+              </label>
+            </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success">Entrar</button>
+          </div>
+        </form>
+        <p class="mt-3 text-center text-muted small">© Instituto Federal - 2025</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script para exibir erro -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const erro = params.get('erro');
+    
+    if (erro === '1') {
+      document.getElementById('erro-login').classList.remove('d-none');
+    } else if (erro === '2') {
+      document.getElementById('erro-acesso').classList.remove('d-none');
+    } else if (erro === '3') {
+      document.getElementById('erro-sessao').classList.remove('d-none');
+    }
+  </script>
+</body>
+
+</html>

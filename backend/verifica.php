@@ -10,7 +10,7 @@ if (!isset($_SESSION['email']) || empty($_SESSION['email']) ||
     session_destroy();
     
     // Redireciona para a página de login
-    header('Location: ../../sistema-presenca/login.html');
+    header('Location: ../../index.html');
     exit();
 }
 
@@ -20,7 +20,7 @@ if (strpos($current_path, '/adm/') !== false && $_SESSION['tipoUsuario'] !== 'ad
     // Se não for administrador tentando acessar área administrativa
     session_unset();
     session_destroy();
-    header('Location: ../../sistema-presenca/login.html?erro=2');
+    header('Location: ../../index.html?erro=2');
     exit();
 }
 ?>

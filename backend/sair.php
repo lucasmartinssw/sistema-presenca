@@ -17,6 +17,6 @@ if (ini_get("session.use_cookies")) {
 }
 
 // Redireciona para a página de login com parâmetro indicando logout
-header('Location: ../sistema-presenca/login.html?erro=3');
+header('Location: ../index.html?erro=3');
 exit();
 ?>
