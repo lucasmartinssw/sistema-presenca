@@ -1,33 +1,33 @@
-Sistema de Presença Mobile (IF Presence)
-Sobre o Projeto
-O IF Presence é um sistema de controle de presença para estudantes, desenvolvido como um aplicativo mobile híbrido. A aplicação serve como uma "catraca virtual", permitindo que alunos e professores registrem sua presença em sala de aula de forma segura, validando a localização do dispositivo em uma área geográfica pré-definida (geofence).
+# Sistema de Presença Mobile (IF Presence)
 
-O sistema é integrado a um backend PHP que gerencia a autenticação de usuários, o registro das sessões de chamada e armazena os dados de presença.
+## Sobre o Projeto
 
-Funcionalidades
-Login de Usuários: Autenticação de professores e alunos.
+O **IF Presence** é um sistema de controle de presença para estudantes, desenvolvido como um aplicativo mobile híbrido. A aplicação serve como uma "catraca virtual", permitindo que alunos e professores registrem sua presença em sala de aula de forma segura, validando a localização do dispositivo em uma área geográfica pré-definida (**geofence**).
 
-Geolocalização: Validação da localização do usuário para confirmar se ele está dentro da área escolar demarcada.
+O sistema é integrado a um **backend em PHP** que gerencia a autenticação de usuários, o registro das sessões de chamada e armazena os dados de presença.
 
-Registro de Presença: Envio de dados de presença (ID do aluno, ID da chamada, localização e timestamp) para o banco de dados.
+---
 
-Gerenciamento de Chamadas: Controle de chamadas agendadas, com horários de início e fim.
+## Funcionalidades
 
-Notificações (Futuro): Envio de notificações automáticas para responsáveis por alunos ausentes.
+- **Login de Usuários:** Autenticação de professores e alunos.
+- **Geolocalização:** Validação da localização do usuário para confirmar se ele está dentro da área escolar demarcada.
+- **Registro de Presença:** Envio de dados de presença (ID do aluno, ID da chamada, localização e timestamp) para o banco de dados.
+- **Gerenciamento de Chamadas:** Controle de chamadas agendadas, com horários de início e fim.
+- **Notificações (Futuro):** Envio de notificações automáticas para responsáveis por alunos ausentes.
 
-Tecnologias Utilizadas
-Frontend (Aplicativo Mobile):
+---
 
-Ionic Framework: Com Angular para o desenvolvimento da interface.
+## Tecnologias Utilizadas
 
-Capacitor: Para a integração com recursos nativos do Android e iOS.
+### Frontend (Aplicativo Mobile):
 
-Capacitor Geolocation: Acesso ao GPS do dispositivo.
+- **Ionic Framework:** Com Angular para o desenvolvimento da interface.
+- **Capacitor:** Para a integração com recursos nativos do Android e iOS.
+- **Capacitor Geolocation:** Acesso ao GPS do dispositivo.
 
-Backend (API & Banco de Dados):
+### Backend (API & Banco de Dados):
 
-PHP: Linguagem de programação da API.
-
-MySQL: Banco de dados relacional.
-
-Apache/XAMPP: Servidor web para o ambiente de desenvolvimento.
+- **PHP:** Linguagem de programação da API.
+- **MySQL:** Banco de dados relacional.
+- **Apache/XAMPP:** Servidor web para o ambiente de desenvolvimento.
